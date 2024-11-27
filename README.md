@@ -21,18 +21,19 @@
 ## Установка (Linux)
 1. Клонирование репозитория 
 
-git clone https://github.com/maomail/windmail.git
+`git clone https://github.com/maomail/windmail.git`
 
 2. Переход в директорию и устанавливаем питона, виртуальное окружение
 
-sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
-cd WindMail_app 
-python3 -m venv venv
-source venv/bin/activate
-pip install gunicorn
+`sudo apt install -y build-essential libssl-dev libffi-dev python3-dev`
+`cd WindMail_app `
+`python3 -m venv venv`
+`source venv/bin/activate`
+`pip install gunicorn`
 
 3. Устанавлиаем и настраиваем gunicorn
 /etc/systemd/system/gunicorn.service (его надо создать): 
+```
 [Unit]
 Description=gunicorn daemon
 Requires=gunicorn.socket
@@ -43,30 +44,34 @@ WorkingDirectory=/var/www/WindMail_app
 ExecStart=/var/www/venv/bin/gunicorn --workers 5 --bind unix:/run/gunicorn.sock windmail.wsgi:application
 [Install]
 WantedBy=multi-user.target
+```
 
 /etc/systemd/system/gunicorn.socket:
+```
 [Unit]
 Description=gunicorn socket
 [Socket]
 ListenStream=/run/gunicorn.sock
 [Install]
 WantedBy=sockets.target
+```
 
-systemd-analyze verify gunicorn.service  
-sudo systemctl enable gunicorn
-sudo systemctl start gunicorn {service gunicorn restart}
-sudo systemctl status gunicorn <- статус должен быть running
-sudo service nginx start {sudo systemctl restart nginx}
+`systemd-analyze verify gunicorn.service`  
+`sudo systemctl enable gunicorn`
+`sudo systemctl start gunicorn {service gunicorn restart}`
+`sudo systemctl status gunicorn <- статус должен быть running`
+`sudo service nginx start {sudo systemctl restart nginx}`
 
 4. Устанавливаем зависимости
 
-pip install -r requirements.txt
+`pip install -r requirements.txt`
 
 5. Настроим вебсокеты с дафной
-apt install daphne
+`apt install daphne`
 
 /etc/systemd/system/daphne.service:
 
+```
 [Unit]
 Description=WebSocket Daphne Service
 After=network.target
@@ -78,12 +83,14 @@ ExecStart=/var/www/WindMail_app/venv/bin/daphne -b 0.0.0.0 -p 7002 windmail.asgi
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target
+```
 
-systemctl daemon-reload
-systemctl start daphne.service
-systemctl status daphne.service
+`systemctl daemon-reload`
+`systemctl start daphne.service`
+`systemctl status daphne.service`
 
 Настройки ASGI в settings.py для channels.
+```
 ASGI_APPLICATION = "windmail.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
@@ -93,18 +100,22 @@ CHANNEL_LAYERS = {
         },
     },
 }
+```
 
 6. База данных по умолчанию sqlite:
+```
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+```
 
 Здесь вы можете получить стартовую базу.
 
 7. Настройки почты в settings.py: 
+```
 EMAIL_HOST = "smtp.beget.com"
 EMAIL_HOST_USER = "maomail@windmail.ru"
 EMAIL_HOST_PASSWORD = "coupavankey111P@"
@@ -112,9 +123,12 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 SERVER_EMAIL = "maomail@windmail.ru"
 DEFAULT_FROM_EMAIL = "maomail@windmail.ru"
+```
 
 8. Также нужно запустить crontab, если мы хотим, чтобы периодически записи удалялись автоматически.
 в settings.py добавить:
+```
 CRONJOBS = [
    ('10 * * * *', 'windmail.tasks.autodelete')
 ] # каждый день в 3 часа запускать автоудаление материалов
+```
