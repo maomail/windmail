@@ -56,11 +56,11 @@ ListenStream=/run/gunicorn.sock
 WantedBy=sockets.target
 ```
 
-`systemd-analyze verify gunicorn.service`  
-`sudo systemctl enable gunicorn`
-`sudo systemctl start gunicorn {service gunicorn restart}`
-`sudo systemctl status gunicorn <- статус должен быть running`
-`sudo service nginx start {sudo systemctl restart nginx}`
+```systemd-analyze verify gunicorn.service```
+```sudo systemctl enable gunicorn```
+```sudo systemctl start gunicorn {service gunicorn restart для обновления}```
+```sudo systemctl status gunicorn <- статус должен быть running```
+```sudo service nginx start {sudo systemctl restart nginx}```
 
 4. Устанавливаем зависимости
 
