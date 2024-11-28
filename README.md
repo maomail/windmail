@@ -67,7 +67,9 @@ WantedBy=sockets.target
 ```sudo systemctl status gunicorn <- статус должен быть running```
 ```sudo service nginx start {sudo systemctl restart nginx}```
 
-5. Настроим вебсокеты
+5. Выполнить миграции и создать суперпользователя, выполнить collectstatic.
+
+6. Настроим вебсокеты
 
 Установим и запустим redis.
 ``` sudo apt install redis-server ```
