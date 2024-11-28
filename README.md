@@ -55,6 +55,7 @@ ListenStream=/run/gunicorn.sock
 [Install]
 WantedBy=sockets.target
 ```
+Запишите файл settings.py как вам нужно.
 
 ```systemd-analyze verify gunicorn.service```
 ```sudo systemctl enable gunicorn```
