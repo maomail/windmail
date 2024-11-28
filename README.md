@@ -79,8 +79,8 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/var/www/WindMail_app
-ExecStart=/var/www/WindMail_app/venv/bin/daphne -b 0.0.0.0 -p 7002 windmail.asgi:application  
+WorkingDirectory=/var/www/windmail
+ExecStart=/var/www/windmail/venv/bin/daphne -b 0.0.0.0 -p 7002 windmail.asgi:application  
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target
