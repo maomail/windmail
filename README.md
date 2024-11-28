@@ -67,7 +67,7 @@ WantedBy=sockets.target
 ```sudo systemctl status gunicorn <- статус должен быть running```
 ```sudo service nginx start {sudo systemctl restart nginx}```
 
-5. Настроим вебсокеты с дафной
+5. Настроим вебсокеты
 
 Установим и запустим redis.
 ``` sudo apt install redis-server ```
@@ -78,6 +78,7 @@ WantedBy=sockets.target
 ```sudo netstat -lnp | grep redis```
 ```sudo systemctl restart redis.service```
 
+Установим и настроим daphne.
 `apt install daphne`
 
 /etc/systemd/system/daphne.service:
@@ -108,12 +109,44 @@ CHANNEL_LAYERS = {
     },
 }
 ```
+И описать сервер.
+```
+server {
+    server_name 127.0.0.1 sitename.com;
+    
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /var/www/windmail/frontend;
+    }
+    
+    location /media/ {
+        root /var/www/windmail;
+    }
+    
+    location /static/admin/ {
+        root /var/www/windmail/windmail;
+    }
+    
+    location /ws/ {
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_redirect off;
+            proxy_pass http://127.0.0.1:7002;
+    }
+    
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+} 
+```
 
 `systemctl daemon-reload`
 `systemctl start daphne.service`
 `systemctl status daphne.service`
 
-6. База данных по умолчанию sqlite:
+7. База данных по умолчанию sqlite:
 ```
 DATABASES = {
     'default': {
@@ -125,18 +158,18 @@ DATABASES = {
 
 Здесь вы можете получить стартовую базу.
 
-7. Настройки почты в settings.py: 
+8. Настройки почты в settings.py: 
 ```
-EMAIL_HOST = "smtp.beget.com"
-EMAIL_HOST_USER = "maomail@windmail.ru"
-EMAIL_HOST_PASSWORD = "coupavankey111P@"
+EMAIL_HOST = ""
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
-SERVER_EMAIL = "maomail@windmail.ru"
-DEFAULT_FROM_EMAIL = "maomail@windmail.ru"
+SERVER_EMAIL = ""
+DEFAULT_FROM_EMAIL = ""
 ```
 
-8. Также нужно запустить crontab, если мы хотим, чтобы периодически записи удалялись автоматически.
+9. Также нужно запустить crontab, если мы хотим, чтобы периодически записи удалялись автоматически.
 в settings.py добавить:
 ```
 CRONJOBS = [
