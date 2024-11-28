@@ -31,7 +31,11 @@
 `source venv/bin/activate`
 `pip install gunicorn`
 
-3. Устанавлиаем и настраиваем gunicorn
+3. Устанавливаем зависимости
+
+`pip install -r requirements.txt`
+
+4. Устанавлиаем и настраиваем gunicorn
 /etc/systemd/system/gunicorn.service (его надо создать): 
 ```
 [Unit]
@@ -62,10 +66,6 @@ WantedBy=sockets.target
 ```sudo systemctl start gunicorn {service gunicorn restart для обновления}```
 ```sudo systemctl status gunicorn <- статус должен быть running```
 ```sudo service nginx start {sudo systemctl restart nginx}```
-
-4. Устанавливаем зависимости
-
-`pip install -r requirements.txt`
 
 5. Настроим вебсокеты с дафной
 `apt install daphne`
