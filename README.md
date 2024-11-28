@@ -26,7 +26,7 @@
 2. Переход в директорию и устанавливаем питона, виртуальное окружение
 
 `sudo apt install -y build-essential libssl-dev libffi-dev python3-dev`
-`cd WindMail_app `
+`cd windmail `
 `python3 -m venv venv`
 `source venv/bin/activate`
 `pip install gunicorn`
