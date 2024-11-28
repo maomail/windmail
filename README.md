@@ -68,6 +68,7 @@ WantedBy=sockets.target
 ```sudo service nginx start {sudo systemctl restart nginx}```
 
 5. Настроим вебсокеты с дафной
+
 Установим и запустим redis.
 ``` sudo apt install redis-server ```
 в /etc/redis/redis.conf: найти 'supervised no' и поменять 'supervised no' на 'supervised systemd'
