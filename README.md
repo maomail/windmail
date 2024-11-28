@@ -178,3 +178,13 @@ CRONJOBS = [
 ```
 
 10. Настроить ssl
+`sudo apt-get install certbot python-certbot-nginx`
+`sudo apt update`
+`sudo apt install snapd`
+`sudo snap install core`
+`sudo snap install --classic certbot`
+`sudo ln -s /snap/bin/certbot /usr/bin/certbot`
+`sudo certbot renew --dry-run`
+`sudo certbot certonly --nginx`
+`sudo certbot install --nginx`
+`sudo systemctl restart nginx`
