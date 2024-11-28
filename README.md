@@ -35,7 +35,7 @@
 
 `pip install -r requirements.txt`
 
-4. Устанавлиаем и настраиваем gunicorn
+4. Устанавливаем и настраиваем gunicorn
 /etc/systemd/system/gunicorn.service (его надо создать): 
 ```
 [Unit]
@@ -68,6 +68,15 @@ WantedBy=sockets.target
 ```sudo service nginx start {sudo systemctl restart nginx}```
 
 5. Настроим вебсокеты с дафной
+Установим и запустим redis.
+``` sudo apt install redis-server ```
+в /etc/redis/redis.conf: найти 'supervised no' и поменять 'supervised no' на 'supervised systemd'
+```sudo systemctl restart redis.service```
+```sudo systemctl status redis```
+```sudo apt install net-tools```
+```sudo netstat -lnp | grep redis```
+```sudo systemctl restart redis.service```
+
 `apt install daphne`
 
 /etc/systemd/system/daphne.service:
@@ -86,10 +95,6 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-`systemctl daemon-reload`
-`systemctl start daphne.service`
-`systemctl status daphne.service`
-
 Настройки ASGI в settings.py для channels.
 ```
 ASGI_APPLICATION = "windmail.asgi.application"
@@ -102,6 +107,10 @@ CHANNEL_LAYERS = {
     },
 }
 ```
+
+`systemctl daemon-reload`
+`systemctl start daphne.service`
+`systemctl status daphne.service`
 
 6. База данных по умолчанию sqlite:
 ```
