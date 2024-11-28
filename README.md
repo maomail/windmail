@@ -41,7 +41,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/var/www/windmail
-ExecStart=/var/www/venv/bin/gunicorn --workers 5 --bind unix:/run/gunicorn.sock windmail.wsgi:application
+ExecStart=/var/www/windmail/venv/bin/gunicorn --workers 5 --bind unix:/run/gunicorn.sock windmail.wsgi:application
 [Install]
 WantedBy=multi-user.target
 ```
